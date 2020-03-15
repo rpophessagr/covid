@@ -1,5 +1,14 @@
-function coef = fitVirus03(getData, locale)
+function coef = fitVirus(getData, locale)
 %FITVIRUS Estimation of coronavirus epidemic size by logistic model
+% Data from
+% https://hgis.uw.edu/virus/
+% http://hgis.uw.edu/virus/assets/virus.csv
+
+% In the data table, each entry indicates the infection status in the 
+% format of "#-#-#-#" -- a 4-sequel entry divided by dashes. The first 
+% sequel represents the number of confirmed cases, the second sequel 
+% represents suspected cases, the third sequel represents cured cases, 
+% the fourth sequel represents death cases.
 
 warning('off')
 
@@ -15,9 +24,9 @@ nc = length(sampleC);
 fprintf('**** Estimation of epidemy size for %s\n',country)
 
 % set times
-samplaTime = 0:1:length(sampleC)-1;
+sampleTime = 0:1:length(sampleC)-1;
 % set date
-samplaDate = date0 + samplaTime;
+sampleDate = date0 + sampleTime;
 
 % initial guess ****************************
 % Regression convergence depends significantly on the initial approximation
@@ -54,10 +63,10 @@ opts = optimoptions('lsqcurvefit','Display','off',...
     'SpecifyObjectiveGradient',true);
 for n = n0:length(sampleC)
     [b,resnorm,~,exitflag,output] = lsqcurvefit(@fun,b0,...
-        samplaTime(1:n),sampleC(1:n),[0 0 0],[],opts);
+        sampleTime(1:n),sampleC(1:n),[0 0 0],[],opts);
     % save results
     err(n) = resnorm;
-    R2(n) = calcR2(samplaTime(1:n),sampleC(1:n),b);
+    R2(n) = calcR2(sampleTime(1:n),sampleC(1:n),b);
     K(n)   = fix(b(1));
     r(n)   = b(2);
     A(n)   = b(3);
@@ -74,7 +83,7 @@ end
 % opts = statset('nlinfit');
 % opts.RobustWgtFun = 'bisquare';
 fprintf('Regression parameters for complet data set\n')
-mdl = fitnlm(samplaTime(1:n),sampleC(1:n),@fun,b,...
+mdl = fitnlm(sampleTime(1:n),sampleC(1:n),@fun,b,...
     'CoefficientNames',{'K','r','A'}) %,'ErrorModel','combined') %,'Options',opts)
 coef = mdl.Coefficients.Estimate;
 if abs(coef(1)/K(nc)) > 2
@@ -92,7 +101,7 @@ fprintf('%4s %10s %8s %8s %7s %5s %5s %10s %5s %5s %10s\n',...
     ' ',' ','(cases)','(cases)','(1/day)','(cases)','(day)',' ','(c/day)','(day)',' ')
 for n = n0:length(sampleC)
     fprintf('%4d %10s %8d %8d %7.3f %5d %5d %10s %5d %5d %10s %5.3f\n',...
-        n,datestr(samplaDate(n)),sampleC(n),K(n),r(n),C0(n),...
+        n,datestr(sampleDate(n)),sampleC(n),K(n),r(n),C0(n),...
         tau(n),datestr(dend(n)),dCpeak(n),tpeak(n),datestr(dpeak(n)),R2(n));
 end
 
@@ -120,7 +129,7 @@ time = 0:1:ceil(2.75*tpeak(n));
 date = date0 + time;
 
 % plot final prediction of epedimy evaluation
-figure
+f1 = figure;
 hold on
 % ...plot prediction
 plot(date,fun(b,time)/1000,'k','LineWidth',2)
@@ -156,8 +165,8 @@ h = fill([tp4,www,www,tp4],[0 0 hhh hhh],'g','FaceAlpha',0.15,'EdgeColor','none'
 h.Annotation.LegendInformation.IconDisplayStyle = 'off';
 %------------
 %... plot data
-scatter(samplaDate,sampleC/1000,50,'k','filled')
-h = scatter(samplaDate,sampleC/1000,30,'w','filled');
+scatter(sampleDate,sampleC/1000,50,'k','filled')
+h = scatter(sampleDate,sampleC/1000,30,'w','filled');
 h.Annotation.LegendInformation.IconDisplayStyle = 'off';
 %-------------------------
 % ...add axes labels
@@ -186,6 +195,8 @@ grid on
 % dd = 7;
 % set(gca, 'XTick', [date(1):dd:date(end)])
 hold off
+plotDate = datestr(sampleC(end),'yy-mm-dd');
+saveas(f1, strcat('../results/',locale,'_',plotDate,'.jpg'));
 
 % plot growth rate of epidemic
 % figure
@@ -206,7 +217,7 @@ predict()
 % plot evaluation of final size
 figure
 hold on
-bar(samplaDate(n0:nc),K(n0:nc)/1000); %,'LineWidth',2)
+bar(sampleDate(n0:nc),K(n0:nc)/1000); %,'LineWidth',2)
 datetick('x',20,'keeplimits')
 ylabel('Infected (1000)')
 xlabel('Date')
@@ -222,7 +233,7 @@ warning('on')
 
 fprintf('Summary\n')
 fprintf('-------\n')
-fprintf(' date: %10s  day: %3d\n',datestr(samplaDate(nc)),nc);
+fprintf(' date: %10s  day: %3d\n',datestr(sampleDate(nc)),nc);
 fprintf(' start date: %s \n',datestr(date0));
 fprintf(' number of cases: %d\n',sampleC(nc));
 fprintf(' estimated epidemic size (cases): %d\n',K(nc));

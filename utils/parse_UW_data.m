@@ -59,5 +59,10 @@ for row = 1:size(T,1)
         TDead.(headers{col})(row) = iDead;
     end
 end
+chinaProv = headers{3:36};
+TConf.china = mean(TConf{:,chinaProv},2)*size(chinaProv,2);
+TSusp.china = mean(TSusp{:,chinaProv},2)*size(chinaProv,2);
+TCure.china = mean(TCure{:,chinaProv},2)*size(chinaProv,2);
+TDead.china = mean(TDead{:,chinaProv},2)*size(chinaProv,2);
 
 save('parsed_UW_data.mat', 'TConf', 'TSusp', 'TCure', 'TDead')
