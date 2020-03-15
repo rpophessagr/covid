@@ -29,6 +29,12 @@ addpath(path);
 fprintf("\r\n\r\nLoading file data\r\n");
 opts = detectImportOptions(fname);
 T = readtable(fname,opts);
+day = transpose(1:size(T,1));
+T = addvars(T,day,'After','datetime');
+
+% for row = 1:size(T,2)
+%     T.day(row) = row;
+% end
 
 headers = T.Properties.VariableNames;
 sz = size(T);
@@ -37,20 +43,29 @@ data = zeros(size(T));
 TConf = array2table(data);
 TConf.Properties.VariableNames = headers;
 TConf.datetime = T.datetime;
+TConf.day = T.day;
 TSusp = array2table(data);
 TSusp.Properties.VariableNames = headers;
 TSusp.datetime = T.datetime;
+TSusp.day = T.day;
 TCure = array2table(data);
 TCure.Properties.VariableNames = headers;
 TCure.datetime = T.datetime;
+TCure.day = T.day;
 TDead = array2table(data);
 TDead.Properties.VariableNames = headers;
 TDead.datetime = T.datetime;
+TDead.day = T.day;
 
 for row = 1:size(T,1)
     progBar(row,size(T,1),10);
     for col = 2:size(headers,2)
-        C = (strsplit(char(T.(headers{col})(row)),'-')); %str2double
+        C = (strsplit(string(T.(headers{col})(row)),'-')); %str2double
+        for c=1:size(C,2)
+            if isnan(str2double(C(c)))
+                C(c) = cellstr('0');
+            end
+        end
         %disp(C);
         sz = size(C,2);
         if sz > 0
@@ -80,4 +95,5 @@ for row = 1:size(T,1)
     end
 end
 
-caseTables = {TConf, TSusp, TCure, TDead};
+%caseTables = {TConf, TSusp, TCure, TDead};
+clearvars -except T TConf TCure TDead TSusp 
