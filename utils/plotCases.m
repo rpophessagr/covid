@@ -1,4 +1,5 @@
 function plotCases(location,TConf, TSusp, TCure, TDead)
+    addpath('utils');   
 %     pTConf = cell2table(caseTables(1));
 %     pTSusp = cell2table(caseTables(2));
 %     pTCure = cell2table(caseTables(3));
