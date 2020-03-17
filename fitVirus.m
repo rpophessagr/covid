@@ -21,7 +21,7 @@ end
 nc = length(sampleC);
 
 % print header
-fprintf('**** Estimation of epidemy size for %s\n',country)
+fprintf('**** Estimation of epidemic size for %s\n',country)
 
 % set times
 sampleTime = 0:1:length(sampleC)-1;
@@ -33,7 +33,7 @@ sampleDate = date0 + sampleTime;
 % It may fails for pure initial guess or for small data set.
 [b0] = iniGuess(sampleC);
 if isempty(b0)
-    fprintf('***Warning: Fail to calculate initial quess. Use default.\n');
+    fprintf('***Warning: Fail to calculate initial guess. Use default.\n');
     b0 = [max(sampleC) 0.5 max(sampleC)]';
 end
 K0 = b0(1);
@@ -82,7 +82,7 @@ end
 % final fit (print include statistics !)
 % opts = statset('nlinfit');
 % opts.RobustWgtFun = 'bisquare';
-fprintf('Regression parameters for complet data set\n')
+fprintf('Regression parameters for complete data set\n')
 mdl = fitnlm(sampleTime(1:n),sampleC(1:n),@fun,b,...
     'CoefficientNames',{'K','r','A'}) %,'ErrorModel','combined') %,'Options',opts)
 coef = mdl.Coefficients.Estimate;
@@ -196,7 +196,7 @@ grid on
 % set(gca, 'XTick', [date(1):dd:date(end)])
 hold off
 plotDate = datestr(sampleC(end),'yy-mm-dd');
-saveas(f1, strcat('../results/',locale,'_',plotDate,'.jpg'));
+saveas(f1, strcat('results/',locale,'_',plotDate,'.jpg'));
 
 % plot growth rate of epidemic
 % figure

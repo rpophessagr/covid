@@ -6,11 +6,12 @@ if nargin < 1
     error('getDataUW :  locale is a required input')
 end
 
+defaultFile = 'data/parsed_UW_data.mat';
 
-if ~isfile('parsed_UW_data.mat')
-    parse_UW_data('virus.csv');
+if ~isfile(defaultFile)
+    parse_UW_data('data/virus.csv');
 end
-load('parsed_UW_data.mat')
+load(defaultFile)
 
 country = locale;
 first_non_NaN = find(~isnan(TConf.(locale)), 1);

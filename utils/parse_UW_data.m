@@ -5,6 +5,14 @@ function parse_UW_data(fname)
 %fname = 'virus.csv';
 
 
+
+% In the data table, each entry indicates the infection status in the 
+% format of "#-#-#-#" -- a 4-sequel entry divided by dashes. The first 
+% sequel represents the number of confirmed cases, the second sequel 
+% represents suspected cases, the third sequel represents cured cases, 
+% the fourth sequel represents death cases.
+
+
 % -- LOAD FILE DATA -- %
 fprintf("\r\n\r\nLoading file data\r\n");
 opts = detectImportOptions(fname);
@@ -65,4 +73,4 @@ TSusp.china = mean(TSusp{:,chinaProv},2)*size(chinaProv,2);
 TCure.china = mean(TCure{:,chinaProv},2)*size(chinaProv,2);
 TDead.china = mean(TDead{:,chinaProv},2)*size(chinaProv,2);
 
-save('parsed_UW_data.mat', 'TConf', 'TSusp', 'TCure', 'TDead')
+save('data/parsed_UW_data.mat', 'TConf', 'TSusp', 'TCure', 'TDead')
