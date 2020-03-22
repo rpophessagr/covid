@@ -27,6 +27,7 @@ fprintf('**** Estimation of epidemic size for %s\n',country)
 sampleTime = 0:1:length(sampleC)-1;
 % set date
 sampleDate = date0 + sampleTime;
+sampleDateStr = datestr(sampleDate, 'dd-mmm');
 
 % initial guess ****************************
 % Regression convergence depends significantly on the initial approximation
@@ -129,7 +130,7 @@ time = 0:1:ceil(2.75*tpeak(n));
 date = date0 + time;
 
 % plot final prediction of epedimy evaluation
-f1 = figure;
+f1 = figure('windowstate','Maximized');
 hold on
 % ...plot prediction
 plot(date,fun(b,time)/1000,'k','LineWidth',2)
@@ -171,7 +172,8 @@ h.Annotation.LegendInformation.IconDisplayStyle = 'off';
 %-------------------------
 % ...add axes labels
 %xtk = get(gca, 'XTick');
-datetick('x',20,'keepticks')
+%datetick('x',20,'keepticks')
+datetick('x','dd-mmm','keepticks')
 %xlim([date(1) date(end)])
 %set(gca, 'XTick',date(1):7:date(end))
 
@@ -195,8 +197,8 @@ grid on
 % dd = 7;
 % set(gca, 'XTick', [date(1):dd:date(end)])
 hold off
-plotDate = datestr(sampleC(end),'yy-mm-dd');
-saveas(f1, strcat('results/',locale,'_',plotDate,'.jpg'));
+plotDate = datestr(sampleDate(end),'yymmdd');
+saveas(f1, strcat('results/caseRate_',plotDate,'_',locale,'.jpg'));
 
 % plot growth rate of epidemic
 % figure
@@ -215,10 +217,11 @@ saveas(f1, strcat('results/',locale,'_',plotDate,'.jpg'));
 predict()
 
 % plot evaluation of final size
-figure
+f2 = figure('windowstate','Maximized');
 hold on
 bar(sampleDate(n0:nc),K(n0:nc)/1000); %,'LineWidth',2)
-datetick('x',20,'keeplimits')
+% datetick('x',20,'keeplimits')
+datetick('x','dd-mmm','keepticks')
 ylabel('Infected (1000)')
 xlabel('Date')
 title(sprintf('Daily estimated final size of epidemic for %s',country))
@@ -228,6 +231,8 @@ if mxx > 2*K(nc)/1000
 end
 grid on
 hold off
+saveas(f2, strcat('results/epiSize_',locale,'.jpg'));
+
 
 warning('on')
 

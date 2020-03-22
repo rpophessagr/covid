@@ -7,17 +7,56 @@
 
 % Epidemic Curve fit from:
 % -- @Spark, fill this in? --
+
+% user determines which sequences to run
+do_us = 1;
+do_ma = 1;
+do_ch = 1;
+do_it = 1;
+do_wa = 1;
+do_tx = 1;
+do_ca = 1;
+
+% end
+
+
 close all
 addpath('data')
 addpath('utils')
-locale = 'us';    % Update desired locale here
-fitVirus(@getDataUW,locale);
 
-locale = 'china';    % Update desired locale here
-fitVirus(@getDataUW,locale);
+if do_us
+    locale = 'us';    % Update desired locale here
+    fitVirus(@getDataUW,locale);
+end
 
-locale = 'massachusetts';    % Update desired locale here
-fitVirus(@getDataUW,locale);
+if do_ch
+    locale = 'china';    % Update desired locale here
+    fitVirus(@getDataUW,locale);
+end
+   
+if do_ma
+    locale = 'massachusetts';    % Update desired locale here
+    fitVirus(@getDataUW,locale);
+end
 
-locale = 'washington';    % Update desired locale here
-fitVirus(@getDataUW,locale);
+if do_wa
+    locale = 'washington';    % Update desired locale here
+    fitVirus(@getDataUW,locale);
+end
+
+if do_it
+    locale = 'italy';    % Update desired locale here
+    fitVirus(@getDataUW,locale);
+end
+
+if do_tx
+    locale = 'texas';    % Update desired locale here
+    fitVirus(@getDataUW,locale);
+end
+
+if do_ca
+    locale = 'california';    % Update desired locale here
+    fitVirus(@getDataUW,locale);
+end
+
+close all
